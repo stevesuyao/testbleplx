@@ -1,57 +1,68 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
+* Sample React Native App
+* https://github.com/facebook/react-native
+* @flow
+*/
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { View, AppRegistry } from 'react-native';
+import { applyMiddleware, createStore } from 'redux';
+import { Provider } from 'react-redux';
+import createLogger from 'redux-logger';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import RootComponent from './app/root/RootComponent';
+import ErrorComponent from './app/root/ErrorComponent';
+import BleComponent from './app/ble/BleComponent';
+import reducer from './app/root/Reducer';
 
-export default class App extends Component<{}> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
-  }
+import { Iterable } from 'immutable';
+
+import { checkPermission } from 'react-native-android-permissions';
+import { requestPermission } from 'react-native-android-permissions';
+
+const stateTransformer = (state) => {
+ if (Iterable.isIterable(state)) {
+   return state.toJS()
+ } else {
+   return state;
+ }
+};
+
+const logger = createLogger({ stateTransformer });
+const store = createStore(reducer)
+
+class ReactBLEScanner extends Component {
+
+ componentDidMount() {
+   this.checkAndGrantPermissions()
+ }
+
+ checkAndGrantPermissions() {
+   checkPermission("android.permission.ACCESS_COARSE_LOCATION").then((result) => {
+     console.log("Already Granted!");
+     console.log(result);
+   }, (result) => {
+     console.log("Not Granted!");
+     console.log(result);
+     requestPermission("android.permission.ACCESS_COARSE_LOCATION").then((result) => {
+       console.log("Granted!", result);
+     }, (result) => {
+       console.log("Not Granted!");
+       console.log(result);
+     });
+   });
+ }
+
+ render() {
+   return (
+     <Provider store={store}>
+       <View style={{flex:1}}>
+         <ErrorComponent/>
+         <RootComponent/>
+         <BleComponent/>
+       </View>
+     </Provider>
+   );
+ }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+AppRegistry.registerComponent('ReactBLEScanner', () => ReactBLEScanner);
