@@ -1,11 +1,11 @@
-import * as ble from './BleActions';
 import { Map, List, OrderedMap } from 'immutable';
+import * as ble from './BleActions';
 
 const defaultState = Map({
   devices: OrderedMap(),
-  selecteddeviceIdentifier: null,
-  selectedserviceUUID: null,
-  selectedcharacteristicUUID: null,
+  selectedDeviceId: null,
+  selectedServiceId: null,
+  selectedCharacteristicId: null,
   scanning: false,
   errors: List(),
   state: ble.DEVICE_STATE_DISCONNECTED,
@@ -22,25 +22,26 @@ export default (state = defaultState, action) => {
     case ble.STOP_SCAN:
       return state.set('scanning', false);
     case ble.DEVICE_FOUND:
+      // console.log(state.get('devices'));
       return state.mergeDeepIn(['devices', action.device.uuid], action.device);
     case ble.CHANGE_DEVICE_STATE:
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.set('scanning', false)
-             .set('state', action.state)
-             .set('selectedDeviceId', action.deviceIdentifier)
+          .set('state', action.state)
+          .set('selectedDeviceId', action.deviceIdentifier);
       });
     case ble.UPDATE_SERVICES:
       return state.mergeDeepIn(['devices', action.deviceIdentifier, 'services'], action.services);
     case ble.UPDATE_CHARACTERISTIC:
       return state.mergeDeepIn(['devices', action.deviceIdentifier,
-                                'services', action.serviceUUID,
-                                'characteristics', action.characteristicUUID], action.characteristic)
+        'services', action.serviceUUID,
+        'characteristics', action.characteristicUUID], action.characteristic);
     case ble.SELECT_SERVICE:
       return state.set('selectedServiceId', action.serviceUUID);
     case ble.SELECT_CHARACTERISTIC:
       return state.set('selectedCharacteristicId', action.characteristicUUID);
     case ble.WRITE_CHARACTERISTIC:
-      return state.withMutations(state => {
+      return state.withMutations((state) => {
         state.setIn(['operations', transactionId], Map({
           type: 'write',
           state: 'new',

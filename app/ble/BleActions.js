@@ -16,6 +16,8 @@ export const POP_ERROR = 'POP_ERROR';
 export const EXECUTE_TRANSACTION = 'EXECUTE_TRANSACTION';
 export const COMPLETE_TRANSACTION = 'COMPLETE_TRANSACTION';
 
+export const NAME_FILTER = 'GITA';
+
 export function startScan() {
   return {
     type: START_SCAN,

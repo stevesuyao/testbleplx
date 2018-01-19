@@ -1,6 +1,7 @@
 
 
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 let borderColor = '#2d7599'
@@ -31,7 +32,7 @@ const ScannedDeviceView = ({name, uuid, rssi, onClick}) => {
 
 ScannedDeviceView.propTypes = {
   name: PropTypes.string,
-  uuid: PropTypes.string.isRequired,
+  // uuid: PropTypes.string.isRequired,
   rssi: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired
 }

@@ -1,23 +1,27 @@
 
 
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
-import Button from 'react-native-button'
+import Button from 'react-native-button';
 
-const ButtonView = ({onClick, disabled, color, text}) => {
-  var style = [styles.containerStyle];
-  style.push({backgroundColor: color})
-  if (disabled) style.push(styles.buttonDisabled)
+const ButtonView = ({
+  onClick, disabled, color, text,
+}) => {
+  const style = [styles.containerStyle];
+  style.push({ backgroundColor: color });
+  if (disabled) style.push(styles.buttonDisabled);
 
   return (
     <Button
       onPress={onClick}
       disabled={disabled}
-      containerStyle={style}>
-        {text}
+      containerStyle={style}
+    >
+      {text}
     </Button>
-  )
-}
+  );
+};
 
 ButtonView.propTypes = {
   onClick: PropTypes.func.isRequired,

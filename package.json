@@ -9,6 +9,7 @@
   "dependencies": {
     "buffer": "^5.0.8",
     "immutable": "^3.8.2",
+    "prop-types": "^15.6.0",
     "react": "16.0.0",
     "react-addons-pure-render-mixin": "^15.6.2",
     "react-immutable-proptypes": "^2.1.0",
